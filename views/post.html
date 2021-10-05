@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+
+    <!--    BootStrap Library-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!--    JQuery-->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+    <!--    Javascript-->
+    <script src="/htmlApi.js"></script>
+
+    <!--    Include CSS -->
+    <link href="/meStyleSheet.css" rel="stylesheet"/>
+
+</head>
+<style>
+
+</style>
+<script>
+    // TODO userId를 html을 실행시킬 때 마다 무조건 가져와야 하는걸까?
+    // TODO 서버와 통신이 너무 많아지는게 아닌가?
+
+    let userId;
+    $(document).ready(function () {
+        // 비회원, 회원 전부 볼 수 있어야하기 때문에 에러 발생을 나지 않게 해야한다.
+        if (localStorage.getItem("token")) {
+            getSelf(function (user) {
+                userId = user.userId;
+                $(`#btnModify${userId}`).show()
+            })
+        }
+        get_comment()
+    });
+
+    function get_comment() {
+        //URL이 바뀔경우 이것도 변경해줘야한다.
+        const postId = location.pathname.split("/")[2]
+        const token = localStorage.getItem("token");
+        $('#comment_body').empty();
+
+        $.ajax({
+            type: "POST",
+            url: `/comment/${postId}`,
+            data: {token},
+            success: function (response) {
+                const comments = response['comments'];
+                const tokenUserId = response['userId']; //response['userId']가 존재하지 않을 경우 undefined를 설정
+
+                for (const commentObject of comments) {
+                    makeComment(commentObject, tokenUserId)
+                }
+            },
+            error: function (error) {
+                console.error(error.responseJSON.errorMessage);
+            },
+        });
+    }
+
+    function modifyCommentShow(commentId) {
+        $(`#comment${commentId}`).hide()
+        $(`#commentIcon${commentId}`).hide()
+
+        $(`#commentDiv${commentId}`).show()
+
+        const commentText = $(`#comment${commentId}`).text().trim();
+        $(`#commentInput${commentId}`).val(commentText)
+    }
+
+    // TODO 댓글 수정을 다른것에도 눌렀다면 꺼지는건? / 프론트가 하겠지 ~
+    function modifyCommenthide(commentId) {
+        $(`#comment${commentId}`).show()
+        $(`#commentIcon${commentId}`).show()
+
+        $(`#commentDiv${commentId}`).hide()
+    }
+
+    function modifyComment(commentId) {
+        const comment = $(`#commentInput${commentId}`).val()
+        if (!comment) {
+            alert("댓글 내용이 존재하지 않습니다.")
+            return;
+        }
+
+        $.ajax({
+            type: "PATCH",
+            url: `/comment/${commentId}`,
+            headers: {
+                authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+            data: {comment},
+            success: function (response) {
+                console.log(response);
+            },
+            error: function (error) {
+                console.error(error.responseJSON.errorMessage);
+            },
+        });
+
+        $(`#comment${commentId}`).text(comment)
+        modifyCommenthide(commentId)
+    }
+
+    function deleteComment(commentId) {
+        if (confirm("댓글을 삭제하시겠습니까?")) {
+            $.ajax({
+                type: "DELETE",
+                url: `/comment/${commentId}`,
+                headers: {
+                    authorization: `Bearer ${localStorage.getItem("token")}`
+                },
+                data: {},
+                success: function (response) {
+                    $(`#commentBody${commentId}`).hide()
+                },
+                error: function (error) {
+                    console.error(error.responseJSON.errorMessage);
+                    alert(error.responseJSON.errorMessage)
+                },
+            });
+        }
+
+    }
+
+    function makeComment(commentObject, tokenUserId) {
+        const {commentId, nickname, comment, userId} = commentObject;
+
+        // TODO 왜 append가 else 밖에 있을때에도 실행되지 않을까?
+        // TODO 만약 해커가 html을 해킹해 onclick 함수의 내부 값을 수정해서 요청한다면 어떤 오류가 발생할 것인가?
+        // onclick="deleteComment(${commentId})"
+        if (userId == tokenUserId) {
+            const temp_html = `
+            <tr id="commentBody${commentId}">
+                <td scope="col">${nickname}</td>
+                <td scope="col" id="comment${commentId}">${comment}
+                </td>
+                <td id="commentIcon${commentId}">
+                    <i class="fa fa-pencil" aria-hidden="true" onclick="modifyCommentShow(${commentId})"></i>
+                    <i class="fa fa-times" aria-hidden="true" onclick="deleteComment(${commentId})"></i>
+                </td>
+
+                <td colspan="2">
+                <div id="commentDiv${commentId}" class="input-group mb-3" style="display: none">
+                  <input id="commentInput${commentId}" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" onclick="modifyComment(${commentId})">저장</button>
+                  </div>
+                </div>
+                </td>
+            </tr>`
+            $('#commentTableBody').append(temp_html)
+
+        } else {
+            const temp_html = `<tr>
+                <td scope="col">${nickname}</td>
+                <td scope="col">${comment}</td>
+                <td></td>
+            </tr>`
+            $('#commentTableBody').append(temp_html)
+        }
+
+    }
+
+    function writeComment() {
+        const comment = $('#comment').val()
+        const postId = location.pathname.split("/")[2]
+
+        if (!comment) {
+            alert("댓글 내용을 입력 해주세요.")
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: `/write/comment/${postId}`,
+            headers: {
+                authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+            data: {comment},
+            success: function (response) {
+                console.log(`writeComment:  ${response}`);
+
+                location.href = location.href
+                history.go(0);
+            },
+            error: function (error) {
+                alert(error.responseJSON.errorMessage)
+            },
+        });
+    }
+
+    function loginCheck() {
+        if (!localStorage.getItem("token")) {
+            alert("로그인이 필요한 기능입니다.")
+            location.href = "/login"
+        }
+    }
+
+    function modifyPost() {
+        const postId = location.pathname.split("/")[2]
+        location.href = `/modify/${postId}`
+    }
+
+</script>
+<body>
+
+<div>
+
+
+    <div class="post-body">
+
+        <div>
+            <button id="btnModify{{post.userId}}" type="button" class="btn btn-primary" onclick="modifyPost()"
+                    style="display:none">수정
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="location.href='/'">취소</button>
+        </div>
+
+        <label for="alert_title">Content</label>
+        <div class="alert alert-secondary" role="alert" id="alert_title">
+            {{post.title}}
+        </div>
+
+        <div class="form-group">
+            <label for="content">Content</label>
+            <textarea class="form-control" id="content" rows="10" disabled>{{post.content}}</textarea>
+        </div>
+
+        <table class="table">
+            <thead class="thead-light">
+            <colgroup>
+                <col style="width:10%"/>
+                <col style="width:80%"/>
+                <col style="width:10%"/>
+            </colgroup>
+            </thead>
+
+
+            <tbody id="commentTableBody">
+
+            </tbody>
+        </table>
+
+        <div/>
+        <div class="input-group mb-3" id="commentWriteBody">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">Comment</span>
+            </div>
+            <input type="text" class="form-control" aria-label="Username"
+                   aria-describedby="basic-addon1" id="comment" onclick="loginCheck()">
+            <button type="button" class="btn btn-primary" onclick="writeComment()">작성</button>
+
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

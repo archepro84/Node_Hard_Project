@@ -1,0 +1,18 @@
+.card-body {
+    /*최대 가로 폭을 지정*/
+    max-width: 480px;
+    /*가운데 정렬 하기 위해 사용*/
+    margin: 0 auto;
+}
+
+.post-body {
+    max-width: 800px;
+    margin: 0 auto;
+
+}
+
+.disabledButton {
+    /*display:block;*/
+    pointer-events: none;
+    opacity: 0.4;
+}

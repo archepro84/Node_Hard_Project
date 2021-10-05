@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <!--    BootStrap Library-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+    <!--    JQuery-->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+    <!--    Javascript-->
+    <script src="/htmlApi.js"></script>
+
+    <!--    Include CSS -->
+    <link href="/meStyleSheet.css" rel="stylesheet"/>
+
+</head>
+<style>
+
+
+</style>
+<script>
+    const user = getSelf(function (user) {
+        return user
+    })
+    console.log(user);
+    // $(document).ready(function () {
+    // });
+
+
+
+    function writePost() {
+        const title = $('#title').val();
+        const content = $('#content').val();
+        $.ajax({
+            type: "POST",
+            url: "/write/post",
+            headers: {
+                authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+            data: {title, content},
+            success: function (response) {
+                // console.log(`writePost : ${response}`);
+                location.href = "/"
+            },
+            error: function (error) {
+                console.log(error);
+            },
+        });
+    }
+
+</script>
+<body>
+
+<div>
+
+    <div class="post-body">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input class="form-control" id="title" placeholder="title">
+        </div>
+
+        <div class="form-group">
+            <label for="content">Content</label>
+            <textarea class="form-control" id="content" rows="10"></textarea>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="writePost()">게시글 작성</button>
+        <button type="button" class="btn btn-secondary" onclick="location.href='/'">취소</button>
+    </div>
+
+
+</div>
+
+
+</body>
+</html>
