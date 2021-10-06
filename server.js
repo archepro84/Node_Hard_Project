@@ -1,6 +1,7 @@
 const http = require("./app")
+require('dotenv').config();
 
-http.listen(4911, () => {
+http.listen(process.env.EXPRESS_PORT, () => {
     console.log(`Start listen Server `);
 });
 

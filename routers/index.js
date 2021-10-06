@@ -1,15 +1,16 @@
 const express = require("express");
-const express_router = express.Router();
-const router = require("./router");
-const router_post = require("./router_post");
-const router_comment = require("./router_comment");
+const router = express.Router();
+
+const router_users = require("./router_users");
+const router_posts = require("./router_posts");
+const router_comments = require("./router_comments");
 const router_sign = require("./router_sign");
 const router_login = require("./router_login");
 
-express_router.use("/api", express.urlencoded({extended: false}), router);
-express_router.use("/api/posts", express.urlencoded({extended: false}), router_post);
-express_router.use("/api/comments", express.urlencoded({extended: false}), router_comment);
-express_router.use("/api/sign", express.urlencoded({extended: false}), router_sign);
-express_router.use("/api/login", express.urlencoded({extended: false}), router_login);
+router.use("/users", router_users);
+router.use("/posts", router_posts);
+router.use("/comments", router_comments);
+router.use("/sign", router_sign);
+router.use("/login", router_login);
 
-module.exports = express_router;
+module.exports = router;

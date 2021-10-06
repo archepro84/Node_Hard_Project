@@ -4,7 +4,7 @@ const Joi = require("joi");
 const router = express.Router();
 const authMiddleware = require("../middlewares/authMiddleware");
 
-router.get('/users/me', authMiddleware, async (req, res) => {
+router.get('/me', authMiddleware, async (req, res) => {
     try {
         const {user} = res.locals;
         res.send({user});

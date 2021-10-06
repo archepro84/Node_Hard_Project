@@ -14,8 +14,11 @@ nunjucks.configure('views', {
     watch: true,
 })
 
+app.use(express.urlencoded({extended: false}));
+app.use(express.json())
+
 app.use('/', express_render); //Render 폴더 적용
-app.use('/', express_router); //Router 폴더 적용
+app.use('/api', express_router); //Router 폴더 적용
 app.use(express.static("assets")); // assets 폴더 공유
 
 module.exports = http

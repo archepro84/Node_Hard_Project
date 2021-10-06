@@ -4,10 +4,6 @@ const {Users, sequelize, Sequelize} = require("../models");
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    res.render("sign");
-});
-
 const userSchema = Joi.object({
     nickname: Joi.string().required(),
     password: Joi.string().required(),

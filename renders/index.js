@@ -12,7 +12,21 @@ router.get('/', (req, res) => {
 });
 
 router.get('/login', (req, res) => {
-    res.render("login");
+    try {
+        res.render("login");
+    } catch (error) {
+        console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
+        res.render('error');
+    }
+});
+
+router.get('/sign', (req, res) => {
+    try {
+        res.render("sign");
+    } catch (error) {
+        console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
+        res.render('error');
+    }
 });
 
 router.get('/error', (req, res) => {
