@@ -10,6 +10,7 @@ module.exports = {
             },
             postId: {
                 type: Sequelize.INTEGER,
+                allowNull: false,
                 //Sequelize에서 외래키를 지정하는 방법
                 references: {
                     model: 'Posts',
@@ -19,6 +20,7 @@ module.exports = {
             },
             userId: {
                 type: Sequelize.INTEGER,
+                allowNull: false,
                 //Sequelize에서 외래키를 지정하는 방법
                 references: {
                     model: 'Users',
@@ -31,11 +33,13 @@ module.exports = {
             },
             createdAt: {
                 allowNull: false,
-                type: Sequelize.DATE
+                type: Sequelize.DATE,
+                defaultValue: Sequelize.fn('now')
             },
             updatedAt: {
                 allowNull: false,
-                type: Sequelize.DATE
+                type: Sequelize.DATE,
+                defaultValue: Sequelize.fn('now')
             }
         });
     },

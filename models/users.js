@@ -11,13 +11,20 @@ module.exports = (sequelize, DataTypes) => {
             // define association here
         }
     }
+
     Users.init({
         userId: {
             primaryKey: true,
             type: DataTypes.INTEGER,
         },
-        nickname: DataTypes.STRING,
-        password: DataTypes.STRING
+        nickname: {
+            required: true,
+            type: DataTypes.STRING
+        },
+        password: {
+            required: true,
+            type: DataTypes.STRING
+        },
     }, {
         sequelize,
         modelName: 'Users',
