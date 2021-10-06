@@ -5,7 +5,7 @@
 
 ## 실행방법
 ``` shell
-$ npm install express dotenv joi sequelize sequelize-cli mysql2 nunjucks jsonwebtoken
+$ npm install express dotenv joi sequelize sequelize-cli mysql2 nunjucks jsonwebtoken chokidar
 $ npx sequelize db:create
 $ npx sequelize db:migrate
 ```
