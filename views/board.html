@@ -57,8 +57,10 @@
             url: "/post/posts",
             data: {},
             success: function (response) {
+
                 console.log(response);
                 for (const post of response.posts) {
+                    console.log(post);
                     make_tr(post)
                 }
             },

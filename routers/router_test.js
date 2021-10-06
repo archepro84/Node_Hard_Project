@@ -3,7 +3,6 @@ const Joi = require("joi");
 const {Users, Posts, Comments} = require("../models");
 const {Op} = require("sequelize");
 const jwt = require("jsonwebtoken");
-const mysql = require("mysql");
 
 const router = express.Router();
 const authMiddleware = require("../middlewares/auth_middleware");

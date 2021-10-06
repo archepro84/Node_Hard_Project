@@ -3,17 +3,10 @@ const Joi = require("joi");
 const {Users, Posts, Comments} = require("../models");
 const {Op} = require("sequelize");
 const jwt = require("jsonwebtoken");
-const mysql = require("mysql");
 
 const router = express.Router();
 const authMiddleware = require("../middlewares/auth_middleware");
 const connection = require("../assets/mySqlLib")
-
-
-// write 페이지에 들어간 후 검색하도록 설정
-router.get('/', (req, res) => {
-    res.render("write")
-});
 
 
 router.post('/post', authMiddleware, async (req, res) => {

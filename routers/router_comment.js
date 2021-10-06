@@ -1,9 +1,8 @@
 const express = require("express");
 const Joi = require("joi");
-const {Users, Posts, Comments} = require("../models");
+const {Users, Posts, Comments, sequelize, Sequelize} = require("../models");
 const {Op} = require("sequelize");
 const jwt = require("jsonwebtoken");
-const mysql = require("mysql");
 const path = require("path")
 
 const router = express.Router();
@@ -25,32 +24,40 @@ function getUserId(token) {
 
 // TODO get 방식으로는 token의 길이를 전부 수신하지 못하기 때문에 Post로 설정함
 router.post('/:postId', async (req, res) => {
-    const {postId} = req.params
-    const {token} = req.body;
+    try {
+        const {postId} = req.params
+        const {token} = req.body;
+        console.log(postId, token);
 
-    const userId_join = `SELECT c.commentId,c.userId, u.nickname, c.comment, c.createdAt, c.updatedAt
-    FROM Comments AS c
-    JOIN Users AS u
-    ON c.userId = u.userId AND c.postId = ${postId}
-    Order By c.createdAt DESC`;
+        const userId_join = `SELECT c.commentId,c.userId, u.nickname, c.comment, c.createdAt, c.updatedAt
+            FROM Comments AS c
+            JOIN Users AS u
+            ON c.userId = u.userId AND c.postId = ${postId}
+            Order By c.createdAt DESC`;
 
-    connection.query(userId_join, function (error, comments, fields) {
-        if (error) {
-            console.log(error);
-            res.status(400).send({
-                    errorMessage: "Comments 값들이 존재하지 않습니다."
-                }
-            )
-            return;
-        }
-        //함수가 복잡해지기는 하지만 1번의 통신으로 token값을 가져오기 위해 사용해본다.
-        if (token) {
-            const userId = getUserId(token);
-            res.send({comments, userId})
-            return;
-        }
-        res.send({comments})
-    });
+        connection.query(userId_join, function (error, comments, fields) {
+            console.log(comments);
+            if (error) {
+                res.status(412).send(
+                    {errorMessage: "Comments 값들이 존재하지 않습니다."}
+                )
+                return;
+            }
+            //함수가 복잡해지기는 하지만 1번의 통신으로 token값을 가져오기 위해 사용해본다.
+            if (token) {
+                const userId = getUserId(token);
+                res.send({comments, userId})
+                return;
+            }
+            res.send({comments})
+        });
+    } catch (error) {
+        console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
+        res.status(400).send(
+            {errorMessage: ""}
+        )
+
+    }
 });
 
 router.patch('/:commentId', authMiddleware, async (req, res) => {

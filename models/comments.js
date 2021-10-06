@@ -28,7 +28,6 @@ module.exports = (sequelize, DataTypes) => {
             required: true,
             type: DataTypes.STRING,
         }
-
     }, {
         sequelize,
         modelName: 'Comments',

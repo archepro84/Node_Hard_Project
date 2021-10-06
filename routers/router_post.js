@@ -1,9 +1,8 @@
 const express = require("express");
 const Joi = require("joi");
-const {Users, Posts, Comments} = require("../models");
+const {Users, Posts, Comments, sequelize, Sequelize} = require("../models");
 const {Op} = require("sequelize");
 const jwt = require("jsonwebtoken");
-const mysql = require("mysql");
 const path = require("path")
 
 const router = express.Router();
@@ -17,22 +16,28 @@ router.get('/posts', async (req, res) => {
     console.log(req.query);
 
     const userId_join = `SELECT p.postId, p.userId, u.nickname, p.title, p.content, p.createdAt, p.updatedAt
-    FROM Posts AS p
-    JOIN Users AS u
-    ON p.userId = u.userId
-    Order By p.postId DESC`;
+        FROM Posts AS p
+        JOIN Users AS u
+        ON p.userId = u.userId
+        Order By p.postId DESC`;
 
-    connection.query(userId_join, function (error, posts, fields) {
-        if (error) {
-            console.log(error);
-            res.status(400).send({
-                    errorMessage: "Posts 값들이 존재하지 않습니다."
-                }
-            )
-            return;
-        }
-        res.send({posts})
-    });
+    await sequelize.query(userId_join, {type: Sequelize.QueryTypes.SELECT})
+        .then((posts) => {
+            console.log(posts);
+            res.send({posts});
+        })
+
+    // connection.query(userId_join, function (error, posts, fields) {
+    //     console.log(posts);
+    //     if (error) {
+    //         console.log(error);
+    //         res.status(400).send(
+    //             {errorMessage: "Posts 값들이 존재하지 않습니다."}
+    //         )
+    //         return;
+    //     }
+    //     res.send({posts})
+    // });
 });
 
 router.get('/:postId', async (req, res) => {
