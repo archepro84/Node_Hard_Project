@@ -29,23 +29,13 @@
 
 </style>
 <script>
-    <!--    localStorage 내부에 token에 해당하는 값이 존재하는지 검색한다.-->
-    if (localStorage.getItem("token")) {
-        getSelf(
-            function () {
-                alert(`이미 로그인이 되어 있습니다.`);
-                window.location.replace("/");
-            }
-        )
-    }
-
+    // 로그인 실행
     function loginEvent() {
         const nickname = $('#nickname').val()
         const password = $('#password').val()
-        // console.log(nickname, password);
         $.ajax({
             type: "POST",
-            url: "/login",
+            url: "/api/login",
             data: {nickname, password},
             success: function (response) {
                 localStorage.setItem("token", response.token)

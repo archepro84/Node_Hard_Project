@@ -2,7 +2,7 @@ const express = require("express");
 const Joi = require("joi");
 
 const router = express.Router();
-const authMiddleware = require("../middlewares/auth_middleware");
+const authMiddleware = require("../middlewares/authMiddleware");
 
 router.get('/users/me', authMiddleware, async (req, res) => {
     try {

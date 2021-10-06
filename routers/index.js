@@ -9,9 +9,9 @@ const router_modify = require("./router_modify");
 
 express_router.use("/api", express.urlencoded({extended: false}), router);
 express_router.use("/api/posts", express.urlencoded({extended: false}), router_post);
-express_router.use("/comment", express.urlencoded({extended: false}), router_comment);
-express_router.use("/sign", express.urlencoded({extended: false}), router_sign);
-express_router.use("/login", express.urlencoded({extended: false}), router_login);
-express_router.use("/modify", express.urlencoded({extended: false}), router_modify);
+express_router.use("/api/comments", express.urlencoded({extended: false}), router_comment);
+express_router.use("/api/sign", express.urlencoded({extended: false}), router_sign);
+express_router.use("/api/login", express.urlencoded({extended: false}), router_login);
+express_router.use("/api/modify", express.urlencoded({extended: false}), router_modify);
 
 module.exports = express_router;

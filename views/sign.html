@@ -31,27 +31,20 @@
 
 </style>
 <script>
-    if (localStorage.getItem("token")) {
-        getSelf(function () {
-            alert("이미 로그인이 되어 있습니다.");
-            window.location.replace("/");
-        })
-    }
-
-
     function signEvent() {
         const nickname = $('#nickname').val();
         const password = $('#password').val();
         const confirm = $('#confirm').val();
-        console.log(nickname, password, confirm);
+
         if (password !== confirm) {
+            alert("패스워드가 일치하지 않습니다.");
             console.log("패스워드가 일치하지 않습니다.");
             return;
         }
 
         $.ajax({
             type: "POST",
-            url: "/sign",
+            url: "/api/sign",
             data: {nickname, password, confirm},
             success: function (response) {
                 location.href = "/"

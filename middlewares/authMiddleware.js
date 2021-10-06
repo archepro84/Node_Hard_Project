@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const {Users} = require("../models");
-const tokenKey = "weekly4_Project_key";
+require('dotenv').config();
 
 module.exports = (req, res, next) => {
     try {
@@ -12,15 +12,13 @@ module.exports = (req, res, next) => {
             });
             return;
         }
-        const {userId} = jwt.verify(tokenValue, tokenKey);
-        //promise
+        const {userId} = jwt.verify(tokenValue, process.env.SECRET_KEY);
         Users.findByPk(userId)
             .then((user) => {
                 res.locals.user = user;
-                //Promise 이므로 next를 사용하여 다음 미들웨어로 넘긴다.
                 next();
             });
-    } catch (err) {
+    } catch (error) {
         res.status(401).send({
             errorMessage: "로그인 후 사용하세요.",
         });

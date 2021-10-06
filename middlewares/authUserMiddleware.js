@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const {Users} = require("../models");
-const tokenKey = "weekly4_Project_key";
+require('dotenv').config();
 
 module.exports = (req, res, next) => {
     try {
@@ -12,13 +12,13 @@ module.exports = (req, res, next) => {
             });
             return;
         }
-        const {userId} = jwt.verify(tokenValue, tokenKey);
+        const {userId} = jwt.verify(tokenValue, process.env.SECRET_KEY);
         Users.findByPk(userId)
             .then((user) => {
                 res.locals.user = user['dataValues'];
                 next();
             });
-    } catch (err) {
+    } catch (error) {
         res.locals.user = {userId: undefined};
         next();
     }

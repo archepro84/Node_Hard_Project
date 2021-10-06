@@ -1,24 +1,11 @@
 const express = require("express");
 const Joi = require("joi");
 const {Users, Posts, Comments} = require("../models");
-const {Op} = require("sequelize");
-const jwt = require("jsonwebtoken");
 
 const router = express.Router();
-const authMiddleware = require("../middlewares/auth_middleware");
-const connection = require("../assets/mySqlLib");
+const authMiddleware = require("../middlewares/authMiddleware");
 
 
-router.get('/:postId', async (req, res) => {
-    const {postId} = req.params;
-
-    const post = await Posts.findByPk(postId)
-        .then((posts) => {
-            return posts['dataValues'];
-        });
-    // console.log(post);
-    res.render("modify", {post});
-});
 router.patch('/:postId', authMiddleware, async (req, res) => {
     const {postId} = req.params;
     const {title, content} = req.body;

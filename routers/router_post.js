@@ -1,11 +1,8 @@
 const express = require("express");
-const Joi = require("joi");
-const {Users, Posts, Comments, sequelize, Sequelize} = require("../models");
-const jwt = require("jsonwebtoken");
+const {Posts, sequelize, Sequelize} = require("../models");
 
 const router = express.Router();
-const authMiddleware = require("../middlewares/auth_middleware");
-
+const authMiddleware = require("../middlewares/authMiddleware");
 
 router.route('/')
     .get(async (req, res) => {

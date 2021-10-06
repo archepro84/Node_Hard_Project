@@ -34,12 +34,9 @@
 
 </style>
 <script>
-    // TODO userId를 html을 실행시킬 때 마다 무조건 가져와야 하는걸까?
-    // TODO 서버와 통신이 너무 많아지는게 아닌가?
-
     let userId;
     $(document).ready(function () {
-        // 비회원, 회원 전부 볼 수 있어야하기 때문에 에러 발생을 나지 않게 해야한다.
+        // 비회원, 회원 전부 볼 수 있어야하기 때문에 에러가 발생하지 않아야한다.
         if (localStorage.getItem("token")) {
             getSelf(function (user) {
                 userId = user.userId;
@@ -49,15 +46,16 @@
         getComments()
     });
 
+    // 해당 게시글의 모든 Comments를 조회
     function getComments() {
-        //URL이 바뀔경우 이것도 변경해줘야한다.
+        //URL의 Depth가 바뀐다면 split Array 인자도 수정해야한다.
         const postId = location.pathname.split("/")[2]
         const token = localStorage.getItem("token");
         $('#comment_body').empty();
 
         $.ajax({
             type: "GET",
-            url: `/comment/${postId}`,
+            url: `/api/comments/${postId}`,
             headers: {
                 authorization: `Bearer ${token}`,
             },
@@ -66,7 +64,6 @@
                 const comments = response['comments'];
                 const tokenUserId = response['userId']; //response['userId']가 존재하지 않을 경우 undefined를 설정
 
-                console.log(comments, tokenUserId);
                 for (const commentObject of comments) {
                     makeComment(commentObject, tokenUserId)
                 }
@@ -87,7 +84,6 @@
         $(`#commentInput${commentId}`).val(commentText)
     }
 
-    // TODO 댓글 수정을 다른것에도 눌렀다면 꺼지는건? / 프론트가 하겠지 ~
     function modifyCommentHide(commentId) {
         $(`#comment${commentId}`).show()
         $(`#commentIcon${commentId}`).show()
@@ -95,6 +91,7 @@
         $(`#commentDiv${commentId}`).hide()
     }
 
+    //댓글 수정
     function modifyComment(commentId) {
         const comment = $(`#commentInput${commentId}`).val()
         if (!comment) {
@@ -104,7 +101,7 @@
 
         $.ajax({
             type: "PATCH",
-            url: `/comment/${commentId}`,
+            url: `/api/comments/${commentId}`,
             headers: {
                 authorization: `Bearer ${localStorage.getItem('token')}`,
             },
@@ -121,11 +118,12 @@
         modifyCommentHide(commentId)
     }
 
+    // 댓글 삭제
     function deleteComment(commentId) {
         if (confirm("댓글을 삭제하시겠습니까?")) {
             $.ajax({
                 type: "DELETE",
-                url: `/comment/${commentId}`,
+                url: `/api/comments/${commentId}`,
                 headers: {
                     authorization: `Bearer ${localStorage.getItem("token")}`
                 },
@@ -142,12 +140,10 @@
 
     }
 
+    // 댓글을 UI에 그려주는 함수
     function makeComment(commentObject, tokenUserId) {
         const {commentId, nickname, comment, userId} = commentObject;
-
-        // TODO 왜 append가 else 밖에 있을때에도 실행되지 않을까?
-        // TODO 만약 해커가 html을 해킹해 onclick 함수의 내부 값을 수정해서 요청한다면 어떤 오류가 발생할 것인가?
-        // onclick="deleteComment(${commentId})"
+        // 접속한 userId와 댓글 userId가 같을 경우
         if (userId == tokenUserId) {
             const temp_html = `
             <tr id="commentBody${commentId}">
@@ -170,7 +166,7 @@
             </tr>`
             $('#commentTableBody').append(temp_html)
 
-        } else {
+        } else { // 접속한 userId와 댓글 userId가 다를 경우
             const temp_html = `<tr>
                 <td scope="col">${nickname}</td>
                 <td scope="col">${comment}</td>
@@ -178,9 +174,9 @@
             </tr>`
             $('#commentTableBody').append(temp_html)
         }
-
     }
 
+    // 댓글 작성
     function writeComment() {
         const comment = $('#comment').val()
         const postId = location.pathname.split("/")[2]
@@ -191,14 +187,12 @@
         }
         $.ajax({
             type: "POST",
-            url: `/comment/${postId}`,
+            url: `/api/comments/${postId}`,
             headers: {
                 authorization: `Bearer ${localStorage.getItem('token')}`,
             },
             data: {comment},
-            success: function (response) {
-                console.log(`writeComment:  ${response}`);
-
+            success: function (response) { //새로고침
                 location.href = location.href
                 history.go(0);
             },

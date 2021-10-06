@@ -31,24 +31,15 @@
 
 </style>
 <script>
-    const user = getSelf(function (user) {
-        return user
-    })
-
-    $(document).ready(function () {
-
-    });
-
 
     function modifyPost() {
-
         const postId = location.pathname.split('/')[2]
         const title = $('#title').val()
         const content = $('#content').val()
 
         $.ajax({
             type: "PATCH",
-            url: `/modify/${postId}`,
+            url: `/api/modify/${postId}`,
             headers: {
                 authorization: `Bearer ${localStorage.getItem("token")}`
             },
