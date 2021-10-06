@@ -49,13 +49,13 @@ router.route('/:postId')
 
             const updateCount = await Posts.update(
                 {title, content},
-                {where: {postId, userId}})
+                {where: {postId, userId}});
 
             if (updateCount < 1) {
                 res.status(401).send({errorMessage: "정상적으로 수정되지 않았습니다."});
                 return;
             }
-            res.status(200).send({})
+            res.status(200).send({});
         } catch (error) {
             console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
             res.status(400).send({
