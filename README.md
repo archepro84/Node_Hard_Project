@@ -8,6 +8,7 @@
 $ npm install express dotenv joi sequelize sequelize-cli mysql2 nunjucks jsonwebtoken chokidar
 $ npx sequelize db:create
 $ npx sequelize db:migrate
+$ node server.js
 ```
 
 ## .env 파일 환경변수 목록
