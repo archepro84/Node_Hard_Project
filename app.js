@@ -7,16 +7,15 @@ const express_render = require('./renders');
 const app = express();
 const http = Http.createServer(app);
 
-
+// nunjucks 템플릿 언어 선언
 app.set('view engine', 'html');
 nunjucks.configure('views', {
     express: app,
     watch: true,
 })
 
-app.use('/', express_render);
-app.use('/', express_router);
-app.use(express.static("assets"));
-
+app.use('/', express_render); //Render 폴더 적용
+app.use('/', express_router); //Router 폴더 적용
+app.use(express.static("assets")); // assets 폴더 공유
 
 module.exports = http

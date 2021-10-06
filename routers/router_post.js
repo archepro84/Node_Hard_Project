@@ -1,8 +1,8 @@
 const express = require("express");
 const {Posts, sequelize, Sequelize} = require("../models");
+const authMiddleware = require("../middlewares/authMiddleware");
 
 const router = express.Router();
-const authMiddleware = require("../middlewares/authMiddleware");
 
 router.route('/')
     .get(async (req, res) => {
@@ -38,6 +38,32 @@ router.route('/')
             );
         }
     });
+
+
+router.route('/:postId')
+    .patch(authMiddleware, async (req, res) => {
+        try {
+            const {postId} = req.params;
+            const {title, content} = req.body;
+            const {userId} = res.locals.user;
+
+            const updateCount = await Posts.update(
+                {title, content},
+                {where: {postId, userId}})
+
+            if (updateCount < 1) {
+                res.status(401).send({errorMessage: "정상적으로 수정되지 않았습니다."});
+                return;
+            }
+            res.status(200).send({})
+        } catch (error) {
+            console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
+            res.status(400).send({
+                errorMessage: '게시글 수정에 실패하였습니다.',
+            });
+        }
+    });
+
 
 
 module.exports = router;

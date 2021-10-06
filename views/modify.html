@@ -31,6 +31,7 @@
 
 </style>
 <script>
+    console.log(location.pathname.split("/"));
 
     function modifyPost() {
         const postId = location.pathname.split('/')[2]
@@ -39,13 +40,13 @@
 
         $.ajax({
             type: "PATCH",
-            url: `/api/modify/${postId}`,
+            url: `/api/posts/${postId}`,
             headers: {
                 authorization: `Bearer ${localStorage.getItem("token")}`
             },
             data: {title, content},
             success: function (response) {
-                console.log(response);
+                location.href = `/posts/${location.pathname.split("/")[2]}`
             },
             error: function (error) {
                 alert(error.responseJSON.errorMessage)

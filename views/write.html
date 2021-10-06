@@ -31,13 +31,7 @@
 
 </style>
 <script>
-    $(document).ready(function () {
-        const user = getSelf(function (user) {
-            return user
-        })
-        console.log(user);
-    });
-
+    // 게시글 작성
     function writePost() {
         const title = $('#title').val();
         const content = $('#content').val();
@@ -49,7 +43,6 @@
             },
             data: {title, content},
             success: function (response) {
-                console.log(`writePost : ${response}`);
                 location.href = "/"
             },
             error: function (error) {

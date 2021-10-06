@@ -35,7 +35,7 @@ router.get('/write', (req, res) => {
     }
 });
 
-router.get('/post/:postId', async (req, res) => {
+router.get('/posts/:postId', async (req, res) => {
     try {
         const {postId} = req.params;
         const post = await Posts.findByPk(postId)
