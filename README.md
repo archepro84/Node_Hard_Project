@@ -3,9 +3,11 @@
 
 
 
-## 설치 모듈 리스트
+## 실행방법
 ``` shell
-$ npm install express dotenv joi sequelize sequelize-cli nunjucks jsonwebtoken
+$ npm install express dotenv joi sequelize sequelize-cli mysql2 nunjucks jsonwebtoken
+$ npx sequelize db:create
+$ npx sequelize db:migrate
 ```
 
 ## .env 파일 환경변수 목록
