@@ -8,7 +8,7 @@ const router_login = require("./router_login");
 const router_modify = require("./router_modify");
 
 express_router.use("/api", express.urlencoded({extended: false}), router);
-express_router.use("/post", express.urlencoded({extended: false}), router_post);
+express_router.use("/api/posts", express.urlencoded({extended: false}), router_post);
 express_router.use("/comment", express.urlencoded({extended: false}), router_comment)
 express_router.use("/sign", express.urlencoded({extended: false}), router_sign)
 express_router.use("/login", express.urlencoded({extended: false}), router_login)

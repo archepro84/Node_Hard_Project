@@ -43,7 +43,7 @@
         const content = $('#content').val();
         $.ajax({
             type: "POST",
-            url: "/post",
+            url: "/api/posts",
             headers: {
                 authorization: `Bearer ${localStorage.getItem('token')}`,
             },

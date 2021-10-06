@@ -48,7 +48,7 @@
     function getPosts() {
         $.ajax({
             type: "GET",
-            url: "/post/posts",
+            url: "/api/posts",
             data: {},
             success: function (response) {
                 for (const post of response.posts) {
