@@ -7,12 +7,12 @@ const authMiddleware = require("../middlewares/auth_middleware");
 router.get('/users/me', authMiddleware, async (req, res) => {
     try {
         const {user} = res.locals;
-        res.send({user})
+        res.send({user});
     } catch (error) {
         console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
         res.status(400).send(
             {errorMessage: "사용자 정보를 가져오지 못하였습니다."}
-        )
+        );
         return;
     }
 });

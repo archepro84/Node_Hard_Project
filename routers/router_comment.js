@@ -3,7 +3,7 @@ const Joi = require("joi");
 const {Users, Posts, Comments, sequelize, Sequelize} = require("../models");
 const {Op} = require("sequelize");
 const jwt = require("jsonwebtoken");
-const path = require("path")
+const path = require("path");
 
 const router = express.Router();
 const authMiddleware = require("../middlewares/auth_middleware");
@@ -11,7 +11,7 @@ const authUserMiddleware = require("../middlewares/authUserMiddleware");
 
 router.get('/:postId', authUserMiddleware, async (req, res) => {
     try {
-        const {postId} = req.params
+        const {postId} = req.params;
         const {userId} = res.locals.user;
 
         const userId_join = `SELECT c.commentId,c.userId, u.nickname, c.comment, c.createdAt, c.updatedAt
@@ -21,7 +21,7 @@ router.get('/:postId', authUserMiddleware, async (req, res) => {
             WHERE c.postId = ${postId}
             Order By c.createdAt DESC`;
 
-        const comments = await sequelize.query(userId_join, {type: Sequelize.QueryTypes.SELECT})
+        const comments = await sequelize.query(userId_join, {type: Sequelize.QueryTypes.SELECT});
         res.send({comments, userId});
         return;
 
@@ -29,7 +29,7 @@ router.get('/:postId', authUserMiddleware, async (req, res) => {
         console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
         res.status(400).send(
             {errorMessage: ""}
-        )
+        );
     }
 });
 
@@ -37,7 +37,7 @@ router.post('/:postId', authMiddleware, async (req, res) => {
     try {
         const {postId} = req.params;
         const {comment} = req.body;
-        const {userId} = res.locals.user
+        const {userId} = res.locals.user;
         console.log(postId, comment, userId);
 
         if (!comment) {
@@ -48,12 +48,12 @@ router.post('/:postId', authMiddleware, async (req, res) => {
         }
 
         await Comments.create({postId, userId, comment});
-        res.send("Clear")
+        res.send("Clear");
     } catch (error) {
         console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
         res.status(400).send(
             {errorMessage: "댓글 작성에 실패하였습니다."}
-        )
+        );
     }
 });
 
@@ -75,13 +75,13 @@ router.patch('/:commentId', authMiddleware, async (req, res) => {
         .then((updateCount) => {
             if (updateCount < 1) {
                 res.status(400).send({
-                        errorMessage: "수정이 정상적으로 처리되지 않았습니다."
-                    }
-                )
+                    errorMessage: "수정이 정상적으로 처리되지 않았습니다."
+                }
+                );
             } else {
-                res.send({})
+                res.send({});
             }
-        })
+        });
 });
 
 router.delete('/:commentId', authMiddleware, async (req, res) => {
@@ -99,14 +99,14 @@ router.delete('/:commentId', authMiddleware, async (req, res) => {
         .then((updateCount) => {
             if (updateCount < 1) {
                 res.status(400).send({
-                        errorMessage: "수정이 정상적으로 처리되지 않았습니다."
-                    }
-                )
+                    errorMessage: "수정이 정상적으로 처리되지 않았습니다."
+                }
+                );
             } else {
-                res.send({})
+                res.send({});
             }
-        })
+        });
 });
 
 
-module.exports = router
+module.exports = router;

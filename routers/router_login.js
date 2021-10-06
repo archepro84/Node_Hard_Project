@@ -6,20 +6,20 @@ const jwt = require("jsonwebtoken");
 
 const router = express.Router();
 const authMiddleware = require("../middlewares/auth_middleware");
-const connection = require("../assets/mySqlLib")
+const connection = require("../assets/mySqlLib");
 
 // TODO router에 전역변수로 암호화 키값을 넣어줘도 괜찮을까?
-const tokenKey = "weekly4_Project_key"
+const tokenKey = "weekly4_Project_key";
 
 
 router.get('/', (req, res) => {
-    res.render("login")
+    res.render("login");
 });
 
 const loginSchema = Joi.object({
     nickname: Joi.string().required(),
     password: Joi.string().required(),
-})
+});
 
 router.post('/', async (req, res) => {
     try {
@@ -34,7 +34,7 @@ router.post('/', async (req, res) => {
             where: {
                 [Op.and]: [{nickname}, {password}]
             }
-        })
+        });
 
 
         if (user.length == 0) {
@@ -43,8 +43,8 @@ router.post('/', async (req, res) => {
             });
             return;
         }
-        const token = jwt.sign({userId: user.userId}, tokenKey)
-        res.send({token})
+        const token = jwt.sign({userId: user.userId}, tokenKey);
+        res.send({token});
 
     } catch (err) {
         res.status(400).send({
@@ -53,4 +53,4 @@ router.post('/', async (req, res) => {
     }
 });
 
-module.exports = router
+module.exports = router;

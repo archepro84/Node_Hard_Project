@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const {Users} = require("../models");
-const tokenKey = "weekly4_Project_key"
+const tokenKey = "weekly4_Project_key";
 
 module.exports = (req, res, next) => {
     try {
@@ -22,4 +22,4 @@ module.exports = (req, res, next) => {
         res.locals.user = {userId: undefined};
         next();
     }
-}
+};

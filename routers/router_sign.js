@@ -6,18 +6,18 @@ const jwt = require("jsonwebtoken");
 
 const router = express.Router();
 const authMiddleware = require("../middlewares/auth_middleware");
-const connection = require("../assets/mySqlLib")
+const connection = require("../assets/mySqlLib");
 
 
 router.get('/', (req, res) => {
-    res.render("sign")
+    res.render("sign");
 });
 
 const userSchema = Joi.object({
     nickname: Joi.string().required(),
     password: Joi.string().required(),
     confirm: Joi.string(),
-})
+});
 
 // TODO SQL인젝션에 관련된 필터를 할 수 없을까?
 router.post('/', async (req, res) => {
@@ -30,7 +30,7 @@ router.post('/', async (req, res) => {
         const re_nickname = /^[a-zA-Z0-9]{3,255}$/;
         const re_password = /^[a-zA-Z0-9]{4,255}$/;
 
-        const {nickname, password, confirm} = await userSchema.validateAsync(req.body)
+        const {nickname, password, confirm} = await userSchema.validateAsync(req.body);
         console.log(nickname, password);
 
         if (password !== confirm) {
@@ -61,7 +61,7 @@ router.post('/', async (req, res) => {
         const user = await Users.findAll({
             where: {nickname}
             // [Op.or]: [{nickname}],
-        })
+        });
 
         if (user.length) {
             res.status(412).send({
@@ -70,9 +70,9 @@ router.post('/', async (req, res) => {
             return;
         }
         //CreateAt 과 UpdateAt을 지정해주지 않아도 자동으로 값이 입력된다.
-        await Users.create({nickname, password})
+        await Users.create({nickname, password});
         console.log(`${nickname} 님이 가입하셨습니다.`);
-        res.status(200).send({result: "Clear"})
+        res.status(200).send({result: "Clear"});
     } catch (err) {
         console.error(err);
         res.status(400).send({
@@ -82,4 +82,4 @@ router.post('/', async (req, res) => {
 });
 
 
-module.exports = router
+module.exports = router;
