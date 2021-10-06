@@ -7,56 +7,53 @@ const path = require("path")
 
 const router = express.Router();
 const authMiddleware = require("../middlewares/auth_middleware");
-const connection = require("../assets/mySqlLib");
+const authUserMiddleware = require("../middlewares/authUserMiddleware");
 
-// TODO router에 전역변수로 암호화 키값을 넣어줘도 괜찮을까?
-const tokenKey = "weekly4_Project_key"
-
-function getUserId(token) {
-    try {
-        // TODO tokenKey로 검출된 데이터는 정상적인 데이터라고 가정한다.
-        const {userId} = jwt.verify(token, tokenKey);
-        return userId
-    } catch {
-        return false;
-    }
-}
-
-// TODO get 방식으로는 token의 길이를 전부 수신하지 못하기 때문에 Post로 설정함
-router.post('/:postId', async (req, res) => {
+router.get('/:postId', authUserMiddleware, async (req, res) => {
     try {
         const {postId} = req.params
-        const {token} = req.body;
-        console.log(postId, token);
+        const {userId} = res.locals.user;
 
         const userId_join = `SELECT c.commentId,c.userId, u.nickname, c.comment, c.createdAt, c.updatedAt
             FROM Comments AS c
             JOIN Users AS u
-            ON c.userId = u.userId AND c.postId = ${postId}
+            ON c.userId = u.userId 
+            WHERE c.postId = ${postId}
             Order By c.createdAt DESC`;
 
-        connection.query(userId_join, function (error, comments, fields) {
-            console.log(comments);
-            if (error) {
-                res.status(412).send(
-                    {errorMessage: "Comments 값들이 존재하지 않습니다."}
-                )
-                return;
-            }
-            //함수가 복잡해지기는 하지만 1번의 통신으로 token값을 가져오기 위해 사용해본다.
-            if (token) {
-                const userId = getUserId(token);
-                res.send({comments, userId})
-                return;
-            }
-            res.send({comments})
-        });
+        const comments = await sequelize.query(userId_join, {type: Sequelize.QueryTypes.SELECT})
+        res.send({comments, userId});
+        return;
+
     } catch (error) {
         console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
         res.status(400).send(
             {errorMessage: ""}
         )
+    }
+});
 
+router.post('/:postId', authMiddleware, async (req, res) => {
+    try {
+        const {postId} = req.params;
+        const {comment} = req.body;
+        const {userId} = res.locals.user
+        console.log(postId, comment, userId);
+
+        if (!comment) {
+            res.status(412).send({
+                errorMessage: '요청한 데이터 형식이 올바르지 않습니다.',
+            });
+            return;
+        }
+
+        await Comments.create({postId, userId, comment});
+        res.send("Clear")
+    } catch (error) {
+        console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
+        res.status(400).send(
+            {errorMessage: "댓글 작성에 실패하였습니다."}
+        )
     }
 });
 
@@ -87,7 +84,6 @@ router.patch('/:commentId', authMiddleware, async (req, res) => {
         })
 });
 
-// TODO 미들웨어에서 들어온 res.locals.user가 다른 유저로인해 교체된다면?
 router.delete('/:commentId', authMiddleware, async (req, res) => {
     const {commentId} = req.params;
     const {userId} = res.locals.user;

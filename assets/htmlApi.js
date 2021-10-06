@@ -9,7 +9,6 @@ function getSelf(callback) {
         success: function (response) {
             callback(response.user);
         },
-        // error: function (xht,status, error) {
         error: function (error) {
             const {status} = error;
             if (status == 401) {

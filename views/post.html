@@ -46,23 +46,27 @@
                 $(`#btnModify${userId}`).show()
             })
         }
-        get_comment()
+        getComments()
     });
 
-    function get_comment() {
+    function getComments() {
         //URL이 바뀔경우 이것도 변경해줘야한다.
         const postId = location.pathname.split("/")[2]
         const token = localStorage.getItem("token");
         $('#comment_body').empty();
 
         $.ajax({
-            type: "POST",
+            type: "GET",
             url: `/comment/${postId}`,
+            headers: {
+                authorization: `Bearer ${token}`,
+            },
             data: {token},
             success: function (response) {
                 const comments = response['comments'];
                 const tokenUserId = response['userId']; //response['userId']가 존재하지 않을 경우 undefined를 설정
 
+                console.log(comments, tokenUserId);
                 for (const commentObject of comments) {
                     makeComment(commentObject, tokenUserId)
                 }
@@ -84,7 +88,7 @@
     }
 
     // TODO 댓글 수정을 다른것에도 눌렀다면 꺼지는건? / 프론트가 하겠지 ~
-    function modifyCommenthide(commentId) {
+    function modifyCommentHide(commentId) {
         $(`#comment${commentId}`).show()
         $(`#commentIcon${commentId}`).show()
 
@@ -114,7 +118,7 @@
         });
 
         $(`#comment${commentId}`).text(comment)
-        modifyCommenthide(commentId)
+        modifyCommentHide(commentId)
     }
 
     function deleteComment(commentId) {
@@ -187,7 +191,7 @@
         }
         $.ajax({
             type: "POST",
-            url: `/write/comment/${postId}`,
+            url: `/comment/${postId}`,
             headers: {
                 authorization: `Bearer ${localStorage.getItem('token')}`,
             },

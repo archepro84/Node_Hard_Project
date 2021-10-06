@@ -31,31 +31,29 @@
 
 </style>
 <script>
-    const user = getSelf(function (user) {
-        return user
-    })
-    console.log(user);
-    // $(document).ready(function () {
-    // });
-
-
+    $(document).ready(function () {
+        const user = getSelf(function (user) {
+            return user
+        })
+        console.log(user);
+    });
 
     function writePost() {
         const title = $('#title').val();
         const content = $('#content').val();
         $.ajax({
             type: "POST",
-            url: "/write/post",
+            url: "/post",
             headers: {
                 authorization: `Bearer ${localStorage.getItem('token')}`,
             },
             data: {title, content},
             success: function (response) {
-                // console.log(`writePost : ${response}`);
+                console.log(`writePost : ${response}`);
                 location.href = "/"
             },
             error: function (error) {
-                console.log(error);
+                console.log(error.responseJSON.errorMessage);
             },
         });
     }
