@@ -47,7 +47,7 @@
             url: "/api/sign",
             data: {nickname, password, confirm},
             success: function (response) {
-                location.href = "/"
+                location.href = "/login"
             },
             error: function (error) {
                 alert(error.responseJSON.errorMessage);
