@@ -39,7 +39,6 @@ router.route('/')
         try {
             const {title, content} = await postSchema.validateAsync(req.body);
             const {userId} = res.locals.user;
-            console.log(title.search(RE_HTML_ERROR));
 
             if (title.search(RE_TITLE) == -1 ||
                 title.search(RE_HTML_ERROR) != -1) {
