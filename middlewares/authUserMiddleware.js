@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const {Users} = require("../models");
 require('dotenv').config();
 
+// 유저 인증에 실패하더라도 에러를 반환하지 않는다.
 module.exports = (req, res, next) => {
     try {
         const {authorization} = req.headers;
