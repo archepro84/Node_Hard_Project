@@ -12,9 +12,9 @@ const userSchema = Joi.object({
 
 router.post('/', async (req, res) => {
     try {
-        //시작과 끝이 a-zA-Z0-9글자로 3 ~ 255개의 단어로 구성되어야 한다.
-        const re_nickname = /^[a-zA-Z0-9]{3,255}$/;
-        const re_password = /^[a-zA-Z0-9]{4,255}$/;
+        //닉네임의 시작과 끝이 a-zA-Z0-9글자로 3 ~ 10 단어로 구성되어야 한다.
+        const re_nickname = /^[a-zA-Z0-9]{3,10}$/;
+        const re_password = /^[a-zA-Z0-9]{4,30}$/;
 
         const {nickname, password, confirm} = await userSchema.validateAsync(req.body);
 
