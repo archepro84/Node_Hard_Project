@@ -1,11 +1,11 @@
 # Node_Hard_Project
-항해99 Node.js 심화주차 프로젝트입니다.
+항해99 Node.js 숙련 주차 프로젝트입니다.
 
 
 
 ## 실행방법
 ``` shell
-$ npm install express dotenv joi sequelize sequelize-cli mysql2 nunjucks jsonwebtoken chokidar
+$ npm install
 $ npx sequelize db:create
 $ npx sequelize db:migrate
 $ node server.js
@@ -17,7 +17,7 @@ server.js 파일이 있는 위치에 .env 파일을 만들어 해당하는 환�
 
 
 ## DB ERD
-![노드 심화 프로젝트 DB ERD](https://user-images.githubusercontent.com/49636918/136245920-033f614a-5b77-42c5-b021-173a7ce56b27.png)
+![노드 숙련 프로젝트 DB ERD](https://user-images.githubusercontent.com/49636918/136245920-033f614a-5b77-42c5-b021-173a7ce56b27.png)
 
 
 ## MySQL Create Table Query
